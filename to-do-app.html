@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#000000"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>Taskflow Pro AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════
+   iOS DESIGN SYSTEM & VARIABLES
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  /* iOS Colors */
+  --ios-bg:#000000;
+  --ios-surface:#1c1c1e;
+  --ios-surface-elevated:#2c2c2e;
+  --ios-surface-hover:#3a3a3c;
+  --ios-border:#38383a;
+  --ios-text:#ffffff;
+  --ios-text-secondary:#8e8e93;
+  --ios-text-tertiary:#636366;
+  
+  /* iOS System Colors */
+  --ios-blue:#0a84ff;
+  --ios-green:#30d158;
+  --ios-red:#ff453a;
+  --ios-orange:#ff9f0a;
+  --ios-yellow:#ffd60a;
+  --ios-purple:#bf5af2;
+  --ios-pink:#ff375f;
+  --ios-teal:#64d2ff;
+  --ios-indigo:#5e5ce6;
+  
+  /* AI Accent */
+  --ai-gradient:linear-gradient(135deg, #bf5af2 0%, #0a84ff 50%, #30d158 100%);
+  --ai-glow:rgba(191, 90, 242, 0.3);
+  
+  /* iOS Spacing */
+  --ios-radius:12px;
+  --ios-radius-lg:20px;
+  --ios-radius-xl:28px;
+  --nav-h:84px;
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-top:env(safe-area-inset-top,0px);
+  
+  /* iOS Typography */
+  --font-stack:-apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+}
+
+[data-theme="light"]{
+  --ios-bg:#f2f2f7;
+  --ios-surface:#ffffff;
+  --ios-surface-elevated:#f2f2f7;
+  --ios-surface-hover:#e5e5ea;
+  --ios-border:#c6c6c8;
+  --ios-text:#000000;
+  --ios-text-secondary:#6c6c70;
+  --ios-text-tertiary:#aeaeb2;
+  --ai-glow:rgba(10, 132, 255, 0.2);
+}
+
+/* ═══════════════════════════════════════════
+   BASE & RESET
+═══════════════════════════════════════════ */
+html{height:100%;overflow:hidden;}
+body{
+  height:100%;
+  font-family:var(--font-stack);
+  background:var(--ios-bg);
+  color:var(--ios-text);
+  overflow:hidden;
+  position:fixed;
+  width:100%;
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.01em;
+}
+
+/* iOS Blur Effects */
+.ios-blur{
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+}
+
+/* ═══════════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════════ */
+.app-shell{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  width:100%;
+  overflow:hidden;
+  background:var(--ios-bg);
+}
+
+/* ═══════════════════════════════════════════
+   iOS NAVIGATION BAR
+═══════════════════════════════════════════ */
+.ios-nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:100;
+  padding:var(--safe-top) 0 0;
+  background:transparent;
+}
+
+.ios-nav-content{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:8px 16px;
+  height:44px;
+}
+
+.ios-nav-title{
+  font-size:17px;
+  font-weight:600;
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  opacity:0;
+  transition:opacity 0.3s;
+}
+
+.ios-nav-title.visible{opacity:1;}
+
+.ios-nav-btn{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:var(--ios-surface);
+  border:none;
+  color:var(--ios-blue);
+  font-size:17px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:transform 0.2s, background 0.2s;
+}
+
+.ios-nav-btn:active{transform:scale(0.9); background:var(--ios-surface-hover);}
+
+/* ═══════════════════════════════════════════
+   SCREEN CONTAINER
+═══════════════════════════════════════════ */
+.screen{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+  padding-top:calc(var(--safe-top) + 44px);
+}
+
+.screen::-webkit-scrollbar{display:none;}
+
+/* ═══════════════════════════════════════════
+   iOS HEADER
+═══════════════════════════════════════════ */
+.ios-header{
+  padding:8px 20px 16px;
+}
+
+.ios-greeting{
+  font-size:28px;
+  font-weight:700;
+  line-height:1.2;
+  margin-bottom:4px;
+}
+
+.ios-date{
+  font-size:15px;
+  color:var(--ios-text-secondary);
+  font-weight:400;
+}
+
+/* ═══════════════════════════════════════════
+   AI ASSISTANT CARD
+═══════════════════════════════════════════ */
+.ai-card{
+  margin:0 16px 20px;
+  background:var(--ios-surface);
+  border-radius:var(--ios-radius-lg);
+  padding:16px;
+  border:1px solid var(--ios-border);
+  position:relative;
+  overflow:hidden;
+}
+
+.ai-card::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:3px;
+  background:var(--ai-gradient);
+}
+
+.ai-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.ai-icon{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  background:var(--ai-gradient);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  color:white;
+  box-shadow:0 4px 12px var(--ai-glow);
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{transform:scale(1); box-shadow:0 4px 12px var(--ai-glow);}
+  50%{transform:scale(1.05); box-shadow:0 6px 20px var(--ai-glow);}
+}
+
+.ai-title{
+  font-size:17px;
+  font-weight:600;
+  flex:1;
+}
+
+.ai-btn{
+  background:var(--ios-surface-elevated);
+  border:1px solid var(--ios-border);
+  border-radius:20px;
+  padding:6px 14px;
+  font-size:13px;
+  font-weight:600;
+  color:var(--ios-blue);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+
+.ai-btn:active{transform:scale(0.95); background:var(--ios-surface-hover);}
+
+.ai-suggestions{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  margin:0 -4px;
+  padding:4px;
+}
+
+.ai-suggestions::-webkit-scrollbar{display:none;}
+
+.ai-chip{
+  flex-shrink:0;
+  background:var(--ios-surface-elevated);
+  border:1px solid var(--ios-border);
+  border-radius:18px;
+  padding:8px 16px;
+  font-size:14px;
+  font-weight:500;
+  color:var(--ios-text);
+  cursor:pointer;
+  transition:all 0.2s;
+  white-space:nowrap;
+}
+
+.ai-chip:hover{background:var(--ios-surface-hover);}
+.ai-chip:active{transform:scale(0.95);}
+
+/* ═══════════════════════════════════════════
+   iOS SECTIONS
+═══════════════════════════════════════════ */
+.ios-section{
+  margin-bottom:24px;
+}
+
+.ios-section-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  margin-bottom:12px;
+}
+
+.ios-section-title{
+  font-size:20px;
+  font-weight:700;
+}
+
+.ios-section-action{
+  font-size:15px;
+  color:var(--ios-blue);
+  font-weight:500;
+  cursor:pointer;
+}
+
+/* ═══════════════════════════════════════════
+   PROGRESS RING (iOS Style)
+═══════════════════════════════════════════ */
+.progress-card{
+  margin:0 16px 20px;
+  background:var(--ios-surface);
+  border-radius:var(--ios-radius-lg);
+  padding:20px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
+.progress-ring-wrap{
+  position:relative;
+  width:90px;
+  height:90px;
+  flex-shrink:0;
+}
+
+.progress-ring-wrap svg{
+  transform:rotate(-90deg);
+  width:100%;
+  height:100%;
+}
+
+.ring-bg{
+  fill:none;
+  stroke:var(--ios-surface-elevated);
+  stroke-width:8;
+  stroke-linecap:round;
+}
+
+.ring-fill{
+  fill:none;
+  stroke:url(#ringGradient);
+  stroke-width:8;
+  stroke-linecap:round;
+  transition:stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ring-center{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.ring-percent{
+  font-size:24px;
+  font-weight:700;
+  color:var(--ios-text);
+  line-height:1;
+}
+
+.ring-label{
+  font-size:11px;
+  color:var(--ios-text-secondary);
+  font-weight:500;
+  margin-top:2px;
+}
+
+.progress-info h3{
+  font-size:17px;
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+.progress-info p{
+  font-size:15px;
+  color:var(--ios-text-secondary);
+}
+
+.streak-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  background:var(--ios-surface-elevated);
+  border-radius:12px;
+  padding:4px 10px;
+  font-size:13px;
+  font-weight:600;
+  color:var(--ios-orange);
+  margin-top:8px;
+}
+
+/* ═══════════════════════════════════════════
+   iOS LIST STYLES
+═══════════════════════════════════════════ */
+.ios-list{
+  background:var(--ios-surface);
+  border-radius:var(--ios-radius-lg);
+  margin:0 16px;
+  overflow:hidden;
+}
+
+.ios-list-item{
+  display:flex;
+  align-items:center;
+  padding:12px 16px;
+  border-bottom:1px solid var(--ios-border);
+  cursor:pointer;
+  transition:background 0.2s;
+  position:relative;
+}
+
+.ios-list-item:last-child{border-bottom:none;}
+.ios-list-item:active{background:var(--ios-surface-hover);}
+
+.ios-list-item::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:4px;
+  background:var(--priority-color, transparent);
+  opacity:0;
+  transition:opacity 0.2s;
+}
+
+.ios-list-item:hover::before{opacity:1;}
+
+.item-icon{
+  width:32px;
+  height:32px;
+  border-radius:8px;
+  background:var(--ios-surface-elevated);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  margin-right:12px;
+  flex-shrink:0;
+}
+
+.item-content{flex:1;min-width:0;}
+
+.item-title{
+  font-size:16px;
+  font-weight:500;
+  margin-bottom:2px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.item-subtitle{
+  font-size:13px;
+  color:var(--ios-text-secondary);
+}
+
+.item-check{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  border:2px solid var(--ios-text-tertiary);
+  margin-right:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  transition:all 0.2s;
+  cursor:pointer;
+}
+
+.item-check.checked{
+  background:var(--ios-green);
+  border-color:var(--ios-green);
+  color:white;
+}
+
+.item-check svg{
+  width:14px;
+  height:14px;
+  opacity:0;
+  transform:scale(0);
+  transition:all 0.2s;
+}
+
+.item-check.checked svg{
+  opacity:1;
+  transform:scale(1);
+}
+
+.item-chevron{
+  color:var(--ios-text-tertiary);
+  font-size:14px;
+  margin-left:8px;
+}
+
+/* ═══════════════════════════════════════════
+   TASK CARDS
+═══════════════════════════════════════════ */
+.task-list{padding:0 16px;display:flex;flex-direction:column;gap:8px;}
+
+.task-card{
+  background:var(--ios-surface);
+  border-radius:var(--ios-radius);
+  position:relative;
+  overflow:hidden;
+  transition:transform 0.2s, box-shadow 0.2s;
+  touch-action:pan-y;
+}
+
+.task-card:active{transform:scale(0.98);}
+
+.task-card::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:4px;
+  background:var(--priority-color, var(--ios-border));
+}
+
+.task-card-inner{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:14px 16px;
+  position:relative;
+  z-index:1;
+  background:var(--ios-surface);
+  transition:transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.task-card.done{opacity:0.6;}
+
+.task-card.swiping .task-card-inner{transition:none;}
+
+.swipe-action{
+  position:absolute;
+  top:0;
+  bottom:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:80px;
+  font-size:20px;
+  z-index:0;
+}
+
+.swipe-left-action{right:0;background:var(--ios-red);}
+.swipe-right-action{left:0;background:var(--ios-green);}
+
+.task-body{flex:1;min-width:0;}
+
+.task-title{
+  font-size:16px;
+  font-weight:500;
+  line-height:1.4;
+  margin-bottom:4px;
+  transition:all 0.2s;
+}
+
+.task-card.done .task-title{
+  text-decoration:line-through;
+  color:var(--ios-text-secondary);
+}
+
+.task-meta{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.task-tag{
+  font-size:12px;
+  font-weight:600;
+  padding:3px 10px;
+  border-radius:20px;
+  text-transform:uppercase;
+  letter-spacing:0.3px;
+}
+
+.tag-high{background:rgba(255, 69, 58, 0.15);color:var(--ios-red);}
+.tag-medium{background:rgba(255, 159, 10, 0.15);color:var(--ios-orange);}
+.tag-low{background:rgba(48, 209, 88, 0.15);color:var(--ios-green);}
+
+.task-actions{
+  display:flex;
+  gap:8px;
+  opacity:0;
+  transition:opacity 0.2s;
+}
+
+.task-card:hover .task-actions{opacity:1;}
+
+.action-btn{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  border:none;
+  background:var(--ios-surface-elevated);
+  color:var(--ios-text-secondary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:14px;
+  transition:all 0.2s;
+}
+
+.action-btn:hover{background:var(--ios-surface-hover); transform:scale(1.1);}
+.action-btn:active{transform:scale(0.9);}
+
+.action-btn.star{color:var(--ios-yellow);}
+.action-btn.ai{color:var(--ios-purple);}
+
+/* ═══════════════════════════════════════════
+   iOS BOTTOM NAVIGATION
+═══════════════════════════════════════════ */
+.ios-tab-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:calc(var(--nav-h) + var(--safe-bottom));
+  background:var(--ios-surface);
+  border-top:1px solid var(--ios-border);
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-around;
+  padding-top:8px;
+  padding-bottom:var(--safe-bottom);
+  z-index:100;
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+}
+
+.tab-item{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  padding:6px 0;
+  cursor:pointer;
+  transition:all 0.2s;
+  position:relative;
+  user-select:none;
+}
+
+.tab-icon{
+  font-size:24px;
+  color:var(--ios-text-tertiary);
+  transition:all 0.2s;
+  position:relative;
+}
+
+.tab-item.active .tab-icon{color:var(--ios-blue);}
+.tab-item.active .tab-icon{transform:translateY(-2px);}
+
+.tab-label{
+  font-size:10px;
+  font-weight:500;
+  color:var(--ios-text-tertiary);
+  transition:all 0.2s;
+}
+
+.tab-item.active .tab-label{color:var(--ios-blue); font-weight:600;}
+
+.tab-badge{
+  position:absolute;
+  top:-2px;
+  right:20%;
+  background:var(--ios-red);
+  color:white;
+  font-size:10px;
+  font-weight:700;
+  min-width:18px;
+  height:18px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 5px;
+  border:2px solid var(--ios-surface);
+}
+
+/* AI Tab Special */
+.tab-item.ai-tab .tab-icon{
+  background:var(--ai-gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ═══════════════════════════════════════════
+   iOS FLOATING BUTTON
+═══════════════════════════════════════════ */
+.ios-fab{
+  position:fixed;
+  bottom:calc(var(--nav-h) + var(--safe-bottom) + 20px);
+  right:20px;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:var(--ios-blue);
+  border:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  color:white;
+  cursor:pointer;
+  z-index:99;
+  box-shadow:0 4px 20px rgba(10, 132, 255, 0.4);
+  transition:transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+}
+
+.ios-fab:active{transform:scale(0.9);}
+.ios-fab:hover{box-shadow:0 6px 28px rgba(10, 132, 255, 0.5);}
+
+/* ═══════════════════════════════════════════
+   iOS MODAL / SHEET
+═══════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  z-index:200;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s;
+  backdrop-filter:blur(4px);
+}
+
+.modal-overlay.open{opacity:1;pointer-events:all;}
+
+.ios-sheet{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:var(--ios-surface);
+  border-radius:var(--ios-radius-xl) var(--ios-radius-xl) 0 0;
+  padding:12px 0 calc(20px + var(--safe-bottom));
+  z-index:201;
+  transform:translateY(100%);
+  transition:transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height:90vh;
+  overflow-y:auto;
+  display:none;
+}
+
+.ios-sheet.open{
+  display:block;
+  transform:translateY(0);
+}
+
+.sheet-handle{
+  width:36px;
+  height:4px;
+  background:var(--ios-text-tertiary);
+  border-radius:2px;
+  margin:0 auto 16px;
+}
+
+.sheet-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px 16px;
+  border-bottom:1px solid var(--ios-border);
+}
+
+.sheet-title{
+  font-size:17px;
+  font-weight:600;
+}
+
+.sheet-action{
+  color:var(--ios-blue);
+  font-size:17px;
+  font-weight:400;
+  cursor:pointer;
+}
+
+.sheet-action.cancel{color:var(--ios-text-secondary);}
+
+/* Form Elements */
+.ios-form{
+  padding:16px;
+}
+
+.ios-input-group{
+  margin-bottom:16px;
+}
+
+.ios-label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  color:var(--ios-text-secondary);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin-bottom:8px;
+  padding-left:4px;
+}
+
+.ios-input{
+  width:100%;
+  background:var(--ios-surface-elevated);
+  border:1px solid var(--ios-border);
+  border-radius:var(--ios-radius);
+  padding:14px 16px;
+  color:var(--ios-text);
+  font-family:inherit;
+  font-size:17px;
+  outline:none;
+  transition:all 0.2s;
+}
+
+.ios-input:focus{
+  border-color:var(--ios-blue);
+  background:var(--ios-surface);
+}
+
+.ios-input::placeholder{color:var(--ios-text-tertiary);}
+
+textarea.ios-input{min-height:100px; resize:none;}
+
+.ios-segmented{
+  display:flex;
+  background:var(--ios-surface-elevated);
+  border-radius:var(--ios-radius);
+  padding:2px;
+  gap:2px;
+}
+
+.segment-btn{
+  flex:1;
+  padding:10px;
+  border:none;
+  background:transparent;
+  color:var(--ios-text-secondary);
+  font-family:inherit;
+  font-size:15px;
+  font-weight:500;
+  border-radius:10px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+
+.segment-btn.active{
+  background:var(--ios-surface);
+  color:var(--ios-text);
+  box-shadow:0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Priority Colors */
+.segment-btn[data-p="high"].active{color:var(--ios-red);}
+.segment-btn[data-p="medium"].active{color:var(--ios-orange);}
+.segment-btn[data-p="low"].active{color:var(--ios-green);}
+
+.ios-btn-primary{
+  width:100%;
+  background:var(--ios-blue);
+  border:none;
+  border-radius:var(--ios-radius);
+  padding:16px;
+  color:white;
+  font-family:inherit;
+  font-size:17px;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:8px;
+  transition:all 0.2s;
+}
+
+.ios-btn-primary:active{transform:scale(0.98); opacity:0.9;}
+
+.ios-btn-primary.ai-generate{
+  background:var(--ai-gradient);
+  position:relative;
+  overflow:hidden;
+}
+
+.ios-btn-primary.ai-generate::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation:shimmer 2s infinite;
+}
+
+@keyframes shimmer{
+  0%{transform:translateX(-100%);}
+  100%{transform:translateX(100%);}
+}
+
+/* ═══════════════════════════════════════════
+   AI CHAT INTERFACE
+═══════════════════════════════════════════ */
+.ai-chat-container{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  background:var(--ios-bg);
+}
+
+.ai-messages{
+  flex:1;
+  overflow-y:auto;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.ai-message{
+  max-width:80%;
+  padding:12px 16px;
+  border-radius:20px;
+  font-size:15px;
+  line-height:1.4;
+  animation:messageSlide 0.3s ease;
+}
+
+@keyframes messageSlide{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.ai-message.user{
+  align-self:flex-end;
+  background:var(--ios-blue);
+  color:white;
+  border-bottom-right-radius:4px;
+}
+
+.ai-message.assistant{
+  align-self:flex-start;
+  background:var(--ios-surface);
+  color:var(--ios-text);
+  border-bottom-left-radius:4px;
+  border:1px solid var(--ios-border);
+}
+
+.ai-input-area{
+  padding:12px 16px calc(12px + var(--safe-bottom));
+  background:var(--ios-surface);
+  border-top:1px solid var(--ios-border);
+}
+
+.ai-input-wrap{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  background:var(--ios-surface-elevated);
+  border-radius:24px;
+  padding:8px 12px;
+  border:1px solid var(--ios-border);
+}
+
+.ai-textarea{
+  flex:1;
+  background:transparent;
+  border:none;
+  color:var(--ios-text);
+  font-family:inherit;
+  font-size:16px;
+  max-height:100px;
+  min-height:24px;
+  resize:none;
+  outline:none;
+  padding:4px;
+}
+
+.ai-send-btn{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:var(--ios-blue);
+  border:none;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:all 0.2s;
+}
+
+.ai-send-btn:active{transform:scale(0.9);}
+.ai-send-btn:disabled{opacity:0.5; cursor:not-allowed;}
+
+.ai-typing{
+  display:flex;
+  gap:4px;
+  padding:16px;
+  align-self:flex-start;
+}
+
+.ai-typing span{
+  width:8px;
+  height:8px;
+  background:var(--ios-text-secondary);
+  border-radius:50%;
+  animation:typing 1.4s infinite;
+}
+
+.ai-typing span:nth-child(2){animation-delay:0.2s;}
+.ai-typing span:nth-child(3){animation-delay:0.4s;}
+
+@keyframes typing{
+  0%,60%,100%{transform:translateY(0);}
+  30%{transform:translateY(-10px);}
+}
+
+/* ═══════════════════════════════════════════
+   AI INSIGHTS CARD
+═══════════════════════════════════════════ */
+.insights-grid{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:12px;
+  padding:0 16px;
+  margin-bottom:20px;
+}
+
+.insight-card{
+  background:var(--ios-surface);
+  border-radius:var(--ios-radius-lg);
+  padding:16px;
+  border:1px solid var(--ios-border);
+}
+
+.insight-icon{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  margin-bottom:12px;
+}
+
+.insight-icon.productivity{background:rgba(10, 132, 255, 0.15); color:var(--ios-blue);}
+.insight-icon.focus{background:rgba(191, 90, 242, 0.15); color:var(--ios-purple);}
+.insight-icon.patterns{background:rgba(255, 159, 10, 0.15); color:var(--ios-orange);}
+.insight-icon.balance{background:rgba(48, 209, 88, 0.15); color:var(--ios-green);}
+
+.insight-value{
+  font-size:28px;
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+.insight-label{
+  font-size:13px;
+  color:var(--ios-text-secondary);
+  font-weight:500;
+}
+
+/* ═══════════════════════════════════════════
+   SMART SUGGESTIONS
+═══════════════════════════════════════════ */
+.smart-suggestions{
+  padding:0 16px;
+  margin-bottom:20px;
+}
+
+.suggestion-bubble{
+  background:var(--ios-surface);
+  border-radius:var(--ios-radius-lg);
+  padding:16px;
+  margin-bottom:12px;
+  border:1px solid var(--ios-border);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+
+.suggestion-bubble:hover{background:var(--ios-surface-hover);}
+.suggestion-bubble:active{transform:scale(0.98);}
+
+.suggestion-header{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+}
+
+.suggestion-icon{
+  font-size:20px;
+}
+
+.suggestion-title{
+  font-size:16px;
+  font-weight:600;
+  flex:1;
+}
+
+.suggestion-reason{
+  font-size:14px;
+  color:var(--ios-text-secondary);
+  line-height:1.4;
+}
+
+/* ═══════════════════════════════════════════
+   LOADING STATES
+═══════════════════════════════════════════ */
+.ai-loading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:40px;
+  color:var(--ios-text-secondary);
+}
+
+.ai-spinner{
+  width:24px;
+  height:24px;
+  border:3px solid var(--ios-surface-elevated);
+  border-top-color:var(--ios-blue);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ═══════════════════════════════════════════
+   EMPTY STATES
+═══════════════════════════════════════════ */
+.ios-empty{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:60px 40px;
+  text-align:center;
+}
+
+.ios-empty-icon{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:var(--ios-surface);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:40px;
+  margin-bottom:16px;
+}
+
+.ios-empty-title{
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:8px;
+}
+
+.ios-empty-sub{
+  font-size:15px;
+  color:var(--ios-text-secondary);
+}
+
+/* ═══════════════════════════════════════════
+   NAV SPACER
+═══════════════════════════════════════════ */
+.nav-spacer{
+  height:calc(var(--nav-h) + var(--safe-bottom) + 20px);
+  flex-shrink:0;
+}
+
+/* ═══════════════════════════════════════════
+   PAGES
+═══════════════════════════════════════════ */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ═══════════════════════════════════════════
+   DESKTOP ADAPTATIONS
+═══════════════════════════════════════════ */
+@media(min-width:900px){
+  .app-shell{
+    flex-direction:row;
+    max-width:none;
+  }
+  
+  .ios-sidebar{
+    width:280px;
+    min-width:280px;
+    height:100vh;
+    background:var(--ios-surface);
+    border-right:1px solid var(--ios-border);
+    display:flex;
+    flex-direction:column;
+    padding-top:20px;
+  }
+  
+  .sidebar-brand{
+    padding:0 20px 20px;
+    font-size:24px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  
+  .sidebar-nav{
+    flex:1;
+    padding:0 12px;
+  }
+  
+  .sidebar-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    color:var(--ios-text-secondary);
+    font-weight:500;
+    margin-bottom:4px;
+    transition:all 0.2s;
+  }
+  
+  .sidebar-item:hover{background:var(--ios-surface-hover); color:var(--ios-text);}
+  .sidebar-item.active{background:var(--ios-blue); color:white;}
+  
+  .ios-tab-bar{display:none !important;}
+  .ios-fab{bottom:40px; right:40px;}
+  .nav-spacer{display:none !important;}
+  
+  .screen{
+    padding-top:20px;
+    height:100vh;
+  }
+  
+  .ios-nav{position:static; padding-top:0;}
+  .ios-nav-content{padding:0 32px;}
+  
+  .ios-header,
+  .ai-card,
+  .progress-card,
+  .ios-list,
+  .task-list,
+  .insights-grid,
+  .smart-suggestions{
+    margin-left:32px;
+    margin-right:32px;
+  }
+  
+  .ios-sheet{
+    left:50%;
+    right:auto;
+    transform:translate(-50%, 100%);
+    width:100%;
+    max-width:600px;
+    border-radius:var(--ios-radius-xl);
+  }
+  
+  .ios-sheet.open{transform:translate(-50%, 0);}
+}
+
+@media(max-width:899px){
+  .ios-sidebar{display:none !important;}
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════ */
+@keyframes slideUp{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.animate-in{animation:slideUp 0.4s ease forwards;}
+
+/* Toast */
+.ios-toast{
+  position:fixed;
+  top:50px;
+  left:50%;
+  transform:translateX(-50%) translateY(-100px);
+  background:rgba(30,30,30,0.9);
+  color:white;
+  padding:12px 24px;
+  border-radius:24px;
+  font-size:15px;
+  font-weight:500;
+  z-index:1000;
+  opacity:0;
+  transition:all 0.3s;
+  backdrop-filter:blur(20px);
+}
+
+.ios-toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+[data-theme="light"] .ios-toast{
+  background:rgba(255,255,255,0.95);
+  color:black;
+  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- iOS Navigation Bar -->
+  <nav class="ios-nav ios-blur">
+    <div class="ios-nav-content">
+      <button class="ios-nav-btn" id="navBackBtn" style="opacity:0; pointer-events:none;" onclick="goBack()">‹</button>
+      <div class="ios-nav-title" id="navTitle">Taskflow Pro</div>
+      <button class="ios-nav-btn" onclick="openAddSheet()">+</button>
+    </div>
+  </nav>
+
+  <!-- Sidebar (Desktop) -->
+  <aside class="ios-sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <span style="font-size:28px;">✦</span>
+      <span>Taskflow Pro</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-item active" data-page="home" onclick="switchPage('home')">
+        <span>🏠</span> Home
+      </div>
+      <div class="sidebar-item" data-page="tasks" onclick="switchPage('tasks')">
+        <span>📋</span> Tasks
+        <span id="sidebarBadge" style="margin-left:auto; background:var(--ios-red); color:white; font-size:11px; padding:2px 8px; border-radius:10px; display:none;">0</span>
+      </div>
+      <div class="sidebar-item" data-page="ai" onclick="switchPage('ai')">
+        <span style="background:var(--ai-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">🤖</span> AI Assistant
+      </div>
+      <div class="sidebar-item" data-page="stats" onclick="switchPage('stats')">
+        <span>📊</span> Analytics
+      </div>
+      <div class="sidebar-item" data-page="settings" onclick="switchPage('settings')">
+        <span>⚙️</span> Settings
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Screen -->
+  <div class="screen" id="mainScreen">
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="page-home">
+      <div class="ios-header">
+        <div class="ios-greeting" id="greetingText">Good Morning</div>
+        <div class="ios-date" id="currentDate">Monday, January 1</div>
+      </div>
+
+      <!-- AI Assistant Card -->
+      <div class="ai-card animate-in">
+        <div class="ai-header">
+          <div class="ai-icon">🤖</div>
+          <div class="ai-title">AI Assistant</div>
+          <button class="ai-btn" onclick="switchPage('ai')">Open →</button>
+        </div>
+        <div class="ai-suggestions" id="aiSuggestions">
+          <div class="ai-chip" onclick="quickAskAI('What should I prioritize today?')">Prioritize</div>
+          <div class="ai-chip" onclick="quickAskAI('Break down my big tasks')">Break down</div>
+          <div class="ai-chip" onclick="quickAskAI('Suggest a schedule')">Schedule</div>
+          <div class="ai-chip" onclick="quickAskAI('Motivate me')">Motivate</div>
+        </div>
+      </div>
+
+      <!-- Progress Card -->
+      <div class="progress-card animate-in" style="animation-delay:0.1s;">
+        <svg width="0" height="0">
+          <defs>
+            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#30d158"/>
+              <stop offset="100%" stop-color="#0a84ff"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="progress-ring-wrap">
+          <svg viewBox="0 0 90 90">
+            <circle class="ring-bg" cx="45" cy="45" r="38"/>
+            <circle class="ring-fill" id="ringFill" cx="45" cy="45" r="38"
+              stroke-dasharray="238.8" stroke-dashoffset="238.8"/>
+          </svg>
+          <div class="ring-center">
+            <span class="ring-percent" id="ringPercent">0%</span>
+            <span class="ring-label">done</span>
+          </div>
+        </div>
+        <div class="progress-info">
+          <h3>Today's Progress</h3>
+          <p id="progressText">No tasks yet</p>
+          <div class="streak-pill">🔥 <span id="streakCount">0</span> day streak</div>
+        </div>
+      </div>
+
+      <!-- Today's Tasks -->
+      <div class="ios-section">
+        <div class="ios-section-header">
+          <span class="ios-section-title">Due Today</span>
+          <span class="ios-section-action" onclick="switchPage('tasks')">See All</span>
+        </div>
+        <div class="ios-list" id="todayList">
+          <div class="ios-empty" style="padding:40px;">
+            <div class="ios-empty-sub">No tasks for today</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Starred Tasks -->
+      <div class="ios-section">
+        <div class="ios-section-header">
+          <span class="ios-section-title">Starred</span>
+        </div>
+        <div class="ios-list" id="starredList">
+          <div class="ios-empty" style="padding:40px;">
+            <div class="ios-empty-sub">No starred tasks</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-spacer"></div>
+    </div>
+
+    <!-- TASKS PAGE -->
+    <div class="page" id="page-tasks">
+      <div class="ios-header">
+        <div class="ios-greeting">All Tasks</div>
+        <div class="ios-date" id="taskCountLabel">0 tasks</div>
+      </div>
+
+      <div class="ios-list" style="margin-bottom:16px;">
+        <div class="ios-list-item" style="padding:8px 16px;">
+          <span style="font-size:17px; margin-right:8px;">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search tasks..." 
+            style="flex:1; background:transparent; border:none; color:var(--ios-text); font-size:17px; outline:none;">
+        </div>
+      </div>
+
+      <div class="task-list" id="taskList"></div>
+      <div class="nav-spacer"></div>
+    </div>
+
+    <!-- AI PAGE -->
+    <div class="page" id="page-ai">
+      <div class="ios-header">
+        <div class="ios-greeting" style="background:var(--ai-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">AI Assistant</div>
+        <div class="ios-date">Powered by Gemini</div>
+      </div>
+
+      <!-- AI Insights -->
+      <div class="insights-grid animate-in">
+        <div class="insight-card">
+          <div class="insight-icon productivity">📈</div>
+          <div class="insight-value" id="insightProductivity">--</div>
+          <div class="insight-label">Productivity Score</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon focus">🎯</div>
+          <div class="insight-value" id="insightFocus">--</div>
+          <div class="insight-label">Focus Time</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon patterns">📊</div>
+          <div class="insight-value" id="insightPatterns">--</div>
+          <div class="insight-label">Tasks/Day</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon balance">⚖️</div>
+          <div class="insight-value" id="insightBalance">--</div>
+          <div class="insight-label">Work/Life</div>
+        </div>
+      </div>
+
+      <!-- Smart Suggestions -->
+      <div class="ios-section">
+        <div class="ios-section-header">
+          <span class="ios-section-title">Smart Suggestions</span>
+          <span class="ios-section-action" onclick="generateInsights()">↻ Refresh</span>
+        </div>
+        <div class="smart-suggestions" id="smartSuggestions">
+          <div class="ai-loading">
+            <div class="ai-spinner"></div>
+            <span>Analyzing your tasks...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="ios-section">
+        <div class="ios-section-header">
+          <span class="ios-section-title">Quick Actions</span>
+        </div>
+        <div class="ios-list">
+          <div class="ios-list-item" onclick="aiAction('prioritize')">
+            <div class="item-icon" style="background:rgba(10,132,255,0.15); color:var(--ios-blue);">🎯</div>
+            <div class="item-content">
+              <div class="item-title">Prioritize Tasks</div>
+              <div class="item-subtitle">AI will rank your tasks by importance</div>
+            </div>
+            <span class="item-chevron">›</span>
+          </div>
+          <div class="ios-list-item" onclick="aiAction('breakdown')">
+            <div class="item-icon" style="background:rgba(191,90,242,0.15); color:var(--ios-purple);">📝</div>
+            <div class="item-content">
+              <div class="item-title">Break Down Tasks</div>
+              <div class="item-subtitle">Split big tasks into subtasks</div>
+            </div>
+            <span class="item-chevron">›</span>
+          </div>
+          <div class="ios-list-item" onclick="aiAction('schedule')">
+            <div class="item-icon" style="background:rgba(255,159,10,0.15); color:var(--ios-orange);">📅</div>
+            <div class="item-content">
+              <div class="item-title">Create Schedule</div>
+              <div class="item-subtitle">Generate optimal daily schedule</div>
+            </div>
+            <span class="item-chevron">›</span>
+          </div>
+          <div class="ios-list-item" onclick="aiAction('motivate')">
+            <div class="item-icon" style="background:rgba(48,209,88,0.15); color:var(--ios-green);">💪</div>
+            <div class="item-content">
+              <div class="item-title">Get Motivation</div>
+              <div class="item-subtitle">AI-powered encouragement</div>
+            </div>
+            <span class="item-chevron">›</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-spacer"></div>
+    </div>
+
+    <!-- AI CHAT PAGE (Overlay) -->
+    <div class="page" id="page-ai-chat" style="position:fixed; inset:0; z-index:150; background:var(--ios-bg);">
+      <div class="ai-chat-container">
+        <div style="padding:var(--safe-top) 16px 12px; border-bottom:1px solid var(--ios-border); display:flex; align-items:center; gap:12px;">
+          <button class="ios-nav-btn" onclick="closeAIChat()" style="position:static; transform:none;">‹</button>
+          <span style="font-size:17px; font-weight:600;">AI Assistant</span>
+        </div>
+        <div class="ai-messages" id="aiMessages"></div>
+        <div class="ai-input-area">
+          <div class="ai-input-wrap">
+            <textarea class="ai-textarea" id="aiInput" placeholder="Ask me anything about your tasks..." rows="1"></textarea>
+            <button class="ai-send-btn" id="aiSendBtn" onclick="sendAIMessage()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS PAGE -->
+    <div class="page" id="page-stats">
+      <div class="ios-header">
+        <div class="ios-greeting">Analytics</div>
+        <div class="ios-date">Your productivity overview</div>
+      </div>
+      
+      <div class="insights-grid">
+        <div class="insight-card">
+          <div class="insight-icon productivity">✅</div>
+          <div class="insight-value" id="statCompleted" style="color:var(--ios-green);">0</div>
+          <div class="insight-label">Completed</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon focus">📝</div>
+          <div class="insight-value" id="statTotal" style="color:var(--ios-blue);">0</div>
+          <div class="insight-label">Total</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon patterns">🔥</div>
+          <div class="insight-value" id="statStreak" style="color:var(--ios-orange);">0</div>
+          <div class="insight-label">Streak</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon balance">⚡</div>
+          <div class="insight-value" id="statRate" style="color:var(--ios-purple);">0%</div>
+          <div class="insight-label">Completion</div>
+        </div>
+      </div>
+
+      <div class="nav-spacer"></div>
+    </div>
+
+    <!-- SETTINGS PAGE -->
+    <div class="page" id="page-settings">
+      <div class="ios-header">
+        <div class="ios-greeting">Settings</div>
+      </div>
+
+      <div class="ios-list" style="margin-bottom:20px;">
+        <div class="ios-list-item">
+          <div class="item-content">
+            <div class="item-title">Your Name</div>
+            <input type="text" id="nameInput" class="ios-input" style="margin-top:8px;" placeholder="Enter your name">
+          </div>
+        </div>
+      </div>
+
+      <div class="ios-list" style="margin-bottom:20px;">
+        <div class="ios-list-item" onclick="toggleTheme()">
+          <div class="item-icon">🌙</div>
+          <div class="item-content">
+            <div class="item-title">Dark Mode</div>
+          </div>
+          <div class="item-check checked" id="themeCheck" style="border:none; background:var(--ios-green);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="ios-list" style="margin-bottom:20px;">
+        <div class="ios-list-item" onclick="clearCompleted()">
+          <div class="item-icon" style="color:var(--ios-red);">🗑️</div>
+          <div class="item-content">
+            <div class="item-title">Clear Completed</div>
+          </div>
+        </div>
+        <div class="ios-list-item" onclick="exportTasks()">
+          <div class="item-icon" style="color:var(--ios-blue);">📤</div>
+          <div class="item-content">
+            <div class="item-title">Export Tasks</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; padding:20px; color:var(--ios-text-secondary); font-size:13px;">
+        Taskflow Pro AI v3.0
+      </div>
+
+      <div class="nav-spacer"></div>
+    </div>
+
+  </div>
+
+  <!-- iOS Tab Bar -->
+  <nav class="ios-tab-bar ios-blur" id="tabBar">
+    <div class="tab-item active" data-page="home" onclick="switchPage('home')">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">Home</span>
+    </div>
+    <div class="tab-item" data-page="tasks" onclick="switchPage('tasks')">
+      <span class="tab-icon">📋</span>
+      <span class="tab-label">Tasks</span>
+      <span class="tab-badge" id="pendingBadge" style="display:none;">0</span>
+    </div>
+    <div class="tab-item ai-tab" data-page="ai" onclick="switchPage('ai')">
+      <span class="tab-icon">🤖</span>
+      <span class="tab-label">AI</span>
+    </div>
+    <div class="tab-item" data-page="stats" onclick="switchPage('stats')">
+      <span class="tab-icon">📊</span>
+      <span class="tab-label">Stats</span>
+    </div>
+    <div class="tab-item" data-page="settings" onclick="switchPage('settings')">
+      <span class="tab-icon">⚙️</span>
+      <span class="tab-label">Settings</span>
+    </div>
+  </nav>
+
+  <!-- Floating Action Button -->
+  <button class="ios-fab" id="fab" onclick="openAddSheet()">+</button>
+
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="overlay" onclick="closeSheets()">
+
+  <!-- Add Task Sheet -->
+  <div class="ios-sheet" id="addSheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-action cancel" onclick="closeSheets()">Cancel</span>
+      <span class="sheet-title">New Task</span>
+      <span class="sheet-action" onclick="submitTask()">Add</span>
+    </div>
+    <div class="ios-form">
+      <div class="ios-input-group">
+        <label class="ios-label">Task Name</label>
+        <input type="text" class="ios-input" id="taskNameInput" placeholder="What needs to be done?">
+      </div>
+      <div class="ios-input-group">
+        <label class="ios-label">Notes</label>
+        <textarea class="ios-input" id="taskNoteInput" placeholder="Add details..."></textarea>
+      </div>
+      <div class="ios-input-group">
+        <label class="ios-label">Priority</label>
+        <div class="ios-segmented">
+          <button class="segment-btn" data-p="high" onclick="selectPriority('high')">High</button>
+          <button class="segment-btn active" data-p="medium" onclick="selectPriority('medium')">Medium</button>
+          <button class="segment-btn" data-p="low" onclick="selectPriority('low')">Low</button>
+        </div>
+      </div>
+      <div class="ios-input-group">
+        <label class="ios-label">AI Assist</label>
+        <button class="ios-btn-primary ai-generate" onclick="aiGenerateSubtasks()">
+          ✨ Generate Subtasks with AI
+        </button>
+      </div>
+      <div class="ios-input-group" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div>
+          <label class="ios-label">Due Date</label>
+          <input type="date" class="ios-input" id="dueDateInput">
+        </div>
+        <div>
+          <label class="ios-label">Category</label>
+          <select class="ios-input" id="categoryInput">
+            <option value="">None</option>
+            <option value="Work">💼 Work</option>
+            <option value="Personal">🏠 Personal</option>
+            <option value="Health">💚 Health</option>
+            <option value="Shopping">🛒 Shopping</option>
+            <option value="Finance">💰 Finance</option>
+            <option value="Learning">📚 Learning</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Response Sheet -->
+  <div class="ios-sheet" id="aiResponseSheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-action cancel" onclick="closeSheets()">Close</span>
+      <span class="sheet-title" id="aiResponseTitle">AI Suggestion</span>
+      <span class="sheet-action" id="aiActionBtn" style="display:none;" onclick="applyAIResponse()">Apply</span>
+    </div>
+    <div class="ios-form">
+      <div id="aiResponseContent" style="font-size:16px; line-height:1.5; color:var(--ios-text); white-space:pre-wrap;"></div>
+      <div id="aiActionArea" style="margin-top:16px; display:none;">
+        <button class="ios-btn-primary" onclick="applyAIResponse()">Add Suggested Tasks</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="ios-toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════
+// CONFIGURATION - REPLACE WITH YOUR API KEY
+// ════════════════════════════════════════════════════
+const GEMINI_API_KEY = 'AIzaSyANDyMeQ4VuRv_KgGAnUIFH-dwBSiAAsi8';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+
+// ════════════════════════════════════════════════════
+// STATE MANAGEMENT
+// ════════════════════════════════════════════════════
+let tasks = [];
+let settings = {};
+let currentPage = 'home';
+let selectedPriority = 'medium';
+let aiConversation = [];
+let lastAIResponse = null;
+let aiActionType = null;
+
+// ════════════════════════════════════════════════════
+// STORAGE
+// ════════════════════════════════════════════════════
+function save() {
+  try {
+    localStorage.setItem('taskflow_ai_tasks', JSON.stringify(tasks));
+    localStorage.setItem('taskflow_ai_conversation', JSON.stringify(aiConversation));
+  } catch (e) {}
+}
+
+function saveSettings() {
+  try {
+    localStorage.setItem('taskflow_ai_settings', JSON.stringify(settings));
+  } catch (e) {}
+}
+
+function load() {
+  try {
+    const t = localStorage.getItem('taskflow_ai_tasks');
+    if (t) tasks = JSON.parse(t);
+    const s = localStorage.getItem('taskflow_ai_settings');
+    if (s) settings = JSON.parse(s);
+    const c = localStorage.getItem('taskflow_ai_conversation');
+    if (c) aiConversation = JSON.parse(c);
+  } catch (e) {}
+  
+  settings = Object.assign({
+    name: 'Friend',
+    theme: 'dark',
+    streak: 0,
+    lastActiveDate: ''
+  }, settings);
+}
+
+// ════════════════════════════════════════════════════
+// INITIALIZATION
+// ════════════════════════════════════════════════════
+function init() {
+  load();
+  applyTheme();
+  updateGreeting();
+  updateDate();
+  updateStreak();
+  renderAll();
+  setupEventListeners();
+  
+  // Generate initial AI insights
+  if (tasks.length > 0) {
+    generateInsights();
+  }
+  
+  // Setup textarea auto-resize
+  const aiInput = document.getElementById('aiInput');
+  if (aiInput) {
+    aiInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+  }
+}
+
+function setupEventListeners() {
+  // Search input
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      renderTaskList(e.target.value);
+    });
+  }
+  
+  // Name input
+  const nameInput = document.getElementById('nameInput');
+  if (nameInput) {
+    nameInput.value = settings.name || '';
+    nameInput.addEventListener('change', (e) => {
+      settings.name = e.target.value;
+      saveSettings();
+      updateGreeting();
+    });
+  }
+  
+  // Enter key on task name
+  const taskNameInput = document.getElementById('taskNameInput');
+  if (taskNameInput) {
+    taskNameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') submitTask();
+    });
+  }
+  
+  // AI input enter key
+  if (document.getElementById('aiInput')) {
+    document.getElementById('aiInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendAIMessage();
+      }
+    });
+  }
+}
+
+// ════════════════════════════════════════════════════
+// THEME & UI
+// ════════════════════════════════════════════════════
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', settings.theme || 'dark');
+  const isDark = settings.theme !== 'light';
+  document.querySelector('meta[name="theme-color"]').content = isDark ? '#000000' : '#f2f2f7';
+  
+  const themeCheck = document.getElementById('themeCheck');
+  if (themeCheck) {
+    if (isDark) {
+      themeCheck.classList.add('checked');
+    } else {
+      themeCheck.classList.remove('checked');
+    }
+  }
+}
+
+function toggleTheme() {
+  settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
+  saveSettings();
+  applyTheme();
+}
+
+function updateGreeting() {
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+  const name = settings.name || 'Friend';
+  
+  const greetingEl = document.getElementById('greetingText');
+  if (greetingEl) {
+    greetingEl.textContent = greeting + (currentPage === 'home' ? ', ' + name : '');
+  }
+}
+
+function updateDate() {
+  const options = { weekday: 'long', month: 'long', day: 'numeric' };
+  const dateStr = new Date().toLocaleDateString('en-US', options);
+  const dateEl = document.getElementById('currentDate');
+  if (dateEl) dateEl.textContent = dateStr;
+}
+
+function updateStreak() {
+  const today = todayStr();
+  if (settings.lastActiveDate !== today) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().slice(0, 10);
+    
+    if (settings.lastActiveDate === yesterdayStr) {
+      settings.streak = (settings.streak || 0) + 1;
+    } else if (settings.lastActiveDate !== today) {
+      settings.streak = 0;
+    }
+    
+    settings.lastActiveDate = today;
+    saveSettings();
+  }
+  
+  const streakEl = document.getElementById('streakCount');
+  if (streakEl) streakEl.textContent = settings.streak || 0;
+}
+
+// ════════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════════
+function switchPage(page) {
+  currentPage = page;
+  
+  // Update pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const targetPage = document.getElementById('page-' + page);
+  if (targetPage) targetPage.classList.add('active');
+  
+  // Update tab bar
+  document.querySelectorAll('.tab-item').forEach(t => {
+    t.classList.toggle('active', t.dataset.page === page);
+  });
+  
+  // Update sidebar
+  document.querySelectorAll('.sidebar-item').forEach(s => {
+    s.classList.toggle('active', s.dataset.page === page);
+  });
+  
+  // Update nav title
+  const navTitle = document.getElementById('navTitle');
+  const titles = {
+    home: 'Taskflow Pro',
+    tasks: 'Tasks',
+    ai: 'AI Assistant',
+    stats: 'Analytics',
+    settings: 'Settings'
+  };
+  if (navTitle) {
+    navTitle.textContent = titles[page] || 'Taskflow Pro';
+    navTitle.classList.toggle('visible', page !== 'home');
+  }
+  
+  // Update back button
+  const backBtn = document.getElementById('navBackBtn');
+  if (backBtn) {
+    backBtn.style.opacity = page === 'home' ? '0' : '1';
+    backBtn.style.pointerEvents = page === 'home' ? 'none' : 'auto';
+  }
+  
+  // Scroll to top
+  document.getElementById('mainScreen').scrollTop = 0;
+  
+  // Page specific renders
+  if (page === 'stats') renderStats();
+  if (page === 'ai') generateInsights();
+  if (page === 'home') renderHome();
+  
+  updateGreeting();
+}
+
+function goBack() {
+  switchPage('home');
+}
+
+// ════════════════════════════════════════════════════
+// MODAL / SHEET MANAGEMENT
+// ════════════════════════════════════════════════════
+function openSheet(sheetId) {
+  const overlay = document.getElementById('overlay');
+  const sheet = document.getElementById(sheetId);
+  
+  if (overlay && sheet) {
+    overlay.classList.add('open');
+    sheet.style.display = 'block';
+    requestAnimationFrame(() => {
+      sheet.classList.add('open');
+    });
+  }
+}
+
+function closeSheets() {
+  const overlay = document.getElementById('overlay');
+  const sheets = document.querySelectorAll('.ios-sheet');
+  
+  if (overlay) overlay.classList.remove('open');
+  
+  sheets.forEach(sheet => {
+    sheet.classList.remove('open');
+    setTimeout(() => {
+      if (!sheet.classList.contains('open')) {
+        sheet.style.display = 'none';
+      }
+    }, 300);
+  });
+}
+
+function openAddSheet() {
+  // Reset form
+  document.getElementById('taskNameInput').value = '';
+  document.getElementById('taskNoteInput').value = '';
+  document.getElementById('dueDateInput').value = todayStr();
+  document.getElementById('categoryInput').value = '';
+  selectPriority('medium');
+  
+  openSheet('addSheet');
+  setTimeout(() => document.getElementById('taskNameInput').focus(), 100);
+}
+
+// ════════════════════════════════════════════════════
+// TASK MANAGEMENT
+// ════════════════════════════════════════════════════
+function selectPriority(p) {
+  selectedPriority = p;
+  document.querySelectorAll('.segment-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.p === p);
+  });
+}
+
+function submitTask() {
+  const name = document.getElementById('taskNameInput').value.trim();
+  if (!name) {
+    showToast('Please enter a task name');
+    return;
+  }
+  
+  const task = {
+    id: uid(),
+    text: name,
+    note: document.getElementById('taskNoteInput').value.trim(),
+    priority: selectedPriority,
+    category: document.getElementById('categoryInput').value,
+    due: document.getElementById('dueDateInput').value || todayStr(),
+    done: false,
+    starred: false,
+    subtasks: [],
+    created: Date.now(),
+    completedAt: null
+  };
+  
+  tasks.unshift(task);
+  save();
+  closeSheets();
+  renderAll();
+  showToast('Task added');
+  
+  // Refresh AI insights if on AI page
+  if (currentPage === 'ai') generateInsights();
+}
+
+function toggleTask(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  
+  task.done = !task.done;
+  task.completedAt = task.done ? Date.now() : null;
+  
+  if (task.done) {
+    settings.lastActiveDate = todayStr();
+    saveSettings();
+    updateStreak();
+    showToast('✓ Task completed!');
+  }
+  
+  save();
+  renderAll();
+}
+
+function toggleStar(id) {
+  const task = tasks.find(t => t.id === id);
+  if (task) {
+    task.starred = !task.starred;
+    save();
+    renderAll();
+  }
+}
+
+function deleteTask(id) {
+  if (confirm('Delete this task?')) {
+    tasks = tasks.filter(t => t.id !== id);
+    save();
+    renderAll();
+    showToast('Task deleted');
+  }
+}
+
+// ════════════════════════════════════════════════════
+// AI INTEGRATION
+// ════════════════════════════════════════════════════
+async function callGeminiAPI(prompt, systemContext = '') {
+  try {
+    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: systemContext + prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1024,
+        }
+      })
+    });
+    
+    if (!response.ok) throw new Error('API request failed');
+    
+    const data = await response.json();
+    return data.candidates[0].content.parts[0].text;
+  } catch (error) {
+    console.error('AI Error:', error);
+    return null;
+  }
+}
+
+// AI Task Breakdown
+async function aiGenerateSubtasks() {
+  const taskName = document.getElementById('taskNameInput').value.trim();
+  if (!taskName) {
+    showToast('Enter a task name first');
+    return;
+  }
+  
+  showToast('✨ AI is analyzing...');
+  
+  const prompt = `Break down this task into 3-5 specific subtasks: "${taskName}"
+  
+Return ONLY a JSON array of subtask strings, like: ["Subtask 1", "Subtask 2", "Subtask 3"]`;
+
+  const response = await callGeminiAPI(prompt);
+  
+  if (response) {
+    try {
+      // Extract JSON from response
+      const jsonMatch = response.match(/\[[\s\S]*\]/);
+      const subtasks = jsonMatch ? JSON.parse(jsonMatch[0]) : response.split('\n').filter(l => l.trim()).slice(0, 5);
+      
+      // Store for later application
+      lastAIResponse = {
+        type: 'subtasks',
+        taskName: taskName,
+        subtasks: Array.isArray(subtasks) ? subtasks : [subtasks]
+      };
+      
+      showAIResponse('Suggested Subtasks', subtasks.map((s, i) => `${i + 1}. ${s}`).join('\n'), true);
+    } catch (e) {
+      showToast('AI response unclear. Please try again.');
+    }
+  } else {
+    showToast('AI service unavailable. Please try again.');
+  }
+}
+
+// AI Insights Generation
+async function generateInsights() {
+  if (tasks.length === 0) {
+    document.getElementById('smartSuggestions').innerHTML = `
+      <div class="suggestion-bubble" onclick="switchPage('home'); openAddSheet();">
+        <div class="suggestion-header">
+          <span class="suggestion-icon">💡</span>
+          <span class="suggestion-title">Start by adding tasks</span>
+        </div>
+        <div class="suggestion-reason">Add some tasks and I'll help you organize them!</div>
+      </div>
+    `;
+    return;
+  }
+  
+  const completed = tasks.filter(t => t.done).length;
+  const total = tasks.length;
+  const rate = Math.round((completed / total) * 100);
+  
+  // Update insight cards
+  document.getElementById('insightProductivity').textContent = rate + '%';
+  document.getElementById('insightFocus').textContent = Math.round(completed * 25 / 60) + 'h';
+  document.getElementById('insightPatterns').textContent = Math.round(total / 7);
+  
+  const workTasks = tasks.filter(t => t.category === 'Work').length;
+  const personalTasks = tasks.filter(t => t.category === 'Personal').length;
+  const balance = workTasks > personalTasks ? 'Work' : personalTasks > workTasks ? 'Life' : 'Balanced';
+  document.getElementById('insightBalance').textContent = balance;
+  
+  // Get AI suggestions
+  const prompt = `Based on these tasks, provide 3 actionable suggestions:
+  
+Tasks: ${tasks.slice(0, 10).map(t => `- ${t.text} (${t.done ? 'done' : 'pending'}, ${t.priority} priority${t.category ? ', ' + t.category : ''})`).join('\n')}
+
+Provide brief, actionable advice in this format:
+1. [Emoji] Title: Description
+2. [Emoji] Title: Description
+3. [Emoji] Title: Description`;
+
+  const response = await callGeminiAPI(prompt);
+  
+  if (response) {
+    const suggestions = parseAISuggestions(response);
+    renderSuggestions(suggestions);
+  }
+}
+
+function parseAISuggestions(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  return lines.slice(0, 3).map(line => {
+    const match = line.match(/^\d+\.\s*([\w\s]+):\s*(.+)$/);
+    if (match) {
+      return {
+        title: match[1].trim(),
+        reason: match[2].trim(),
+        icon: getIconForSuggestion(match[1])
+      };
+    }
+    return {
+      title: 'Suggestion',
+      reason: line.replace(/^\d+\.\s*/, ''),
+      icon: '💡'
+    };
+  });
+}
+
+function getIconForSuggestion(title) {
+  const icons = {
+    'Prioritize': '🎯',
+    'Focus': '🎧',
+    'Break': '☕',
+    'Schedule': '📅',
+    'Delegate': '👥',
+    'Review': '👀',
+    'Batch': '📦',
+    'Morning': '🌅',
+    'Evening': '🌙'
+  };
+  return icons[title.split(' ')[0]] || '💡';
+}
+
+function renderSuggestions(suggestions) {
+  const container = document.getElementById('smartSuggestions');
+  container.innerHTML = suggestions.map((s, i) => `
+    <div class="suggestion-bubble animate-in" style="animation-delay:${i * 0.1}s;" onclick="applySuggestion('${s.title}')">
+      <div class="suggestion-header">
+        <span class="suggestion-icon">${s.icon}</span>
+        <span class="suggestion-title">${s.title}</span>
+      </div>
+      <div class="suggestion-reason">${s.reason}</div>
+    </div>
+  `).join('');
+}
+
+function applySuggestion(title) {
+  showToast(`Applied: ${title}`);
+  // Could implement specific actions based on suggestion type
+}
+
+// AI Chat
+function quickAskAI(question) {
+  document.getElementById('page-ai-chat').classList.add('active');
+  addAIMessage('user', question);
+  processAIQuery(question);
+}
+
+function closeAIChat() {
+  document.getElementById('page-ai-chat').classList.remove('active');
+}
+
+function sendAIMessage() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  addAIMessage('user', text);
+  input.value = '';
+  input.style.height = 'auto';
+  
+  processAIQuery(text);
+}
+
+function addAIMessage(role, text) {
+  const container = document.getElementById('aiMessages');
+  const msg = document.createElement('div');
+  msg.className = `ai-message ${role}`;
+  msg.textContent = text;
+  container.appendChild(msg);
+  container.scrollTop = container.scrollHeight;
+  
+  // Save to conversation
+  aiConversation.push({role, text, time: Date.now()});
+  if (aiConversation.length > 50) aiConversation = aiConversation.slice(-50);
+  save();
+}
+
+function showAITyping() {
+  const container = document.getElementById('aiMessages');
+  const typing = document.createElement('div');
+  typing.className = 'ai-typing';
+  typing.id = 'aiTyping';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  container.appendChild(typing);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideAITyping() {
+  const typing = document.getElementById('aiTyping');
+  if (typing) typing.remove();
+}
+
+async function processAIQuery(query) {
+  showAITyping();
+  
+  const context = `You are a helpful task management assistant. Current tasks: ${tasks.length} total, ${tasks.filter(t => t.done).length} completed. Today's date: ${todayStr()}.`;
+  
+  const response = await callGeminiAPI(query, context);
+  
+  hideAITyping();
+  
+  if (response) {
+    addAIMessage('assistant', response);
+  } else {
+    addAIMessage('assistant', 'Sorry, I\'m having trouble connecting. Please try again in a moment.');
+  }
+}
+
+// AI Actions
+async function aiAction(type) {
+  aiActionType = type;
+  
+  const prompts = {
+    prioritize: 'Analyze these tasks and list them in priority order (High/Medium/Low) with brief reasoning:',
+    breakdown: 'Identify complex tasks that should be broken into subtasks:',
+    schedule: 'Create an optimal daily schedule based on these tasks:',
+    motivate: 'Provide motivational advice based on current progress:'
+  };
+  
+  const taskContext = tasks.filter(t => !t.done).map(t => `- ${t.text} (${t.priority} priority)`).join('\n');
+  const prompt = `${prompts[type]}\n\n${taskContext}`;
+  
+  showToast('✨ AI is thinking...');
+  const response = await callGeminiAPI(prompt);
+  
+  if (response) {
+    showAIResponse(type.charAt(0).toUpperCase() + type.slice(1), response, false);
+  } else {
+    showToast('AI service unavailable');
+  }
+}
+
+function showAIResponse(title, content, showApply) {
+  document.getElementById('aiResponseTitle').textContent = title;
+  document.getElementById('aiResponseContent').textContent = content;
+  document.getElementById('aiActionArea').style.display = showApply ? 'block' : 'none';
+  document.getElementById('aiActionBtn').style.display = showApply ? 'block' : 'none';
+  
+  openSheet('aiResponseSheet');
+}
+
+function applyAIResponse() {
+  if (!lastAIResponse || lastAIResponse.type !== 'subtasks') {
+    closeSheets();
+    return;
+  }
+  
+  // Create main task with subtasks
+  const task = {
+    id: uid(),
+    text: lastAIResponse.taskName,
+    note: 'AI-generated subtasks',
+    priority: selectedPriority,
+    category: document.getElementById('categoryInput').value,
+    due: document.getElementById('dueDateInput').value || todayStr(),
+    done: false,
+    starred: false,
+    subtasks: lastAIResponse.subtasks.map(text => ({
+      id: uid(),
+      text,
+      done: false
+    })),
+    created: Date.now(),
+    completedAt: null
+  };
+  
+  tasks.unshift(task);
+  save();
+  closeSheets();
+  renderAll();
+  showToast('✨ Task with AI subtasks added!');
+}
+
+// ════════════════════════════════════════════════════
+// RENDERING
+// ════════════════════════════════════════════════════
+function renderAll() {
+  renderHome();
+  renderTaskList();
+  updateBadge();
+}
+
+function renderHome() {
+  const today = todayStr();
+  const todayTasks = tasks.filter(t => t.due === today);
+  const completed = todayTasks.filter(t => t.done).length;
+  const total = todayTasks.length;
+  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+  
+  // Update ring
+  const circumference = 238.8;
+  const offset = circumference - (percent / 100) * circumference;
+  const ringFill = document.getElementById('ringFill');
+  if (ringFill) {
+    ringFill.style.strokeDashoffset = offset;
+  }
+  
+  const ringPercent = document.getElementById('ringPercent');
+  if (ringPercent) ringPercent.textContent = percent + '%';
+  
+  const progressText = document.getElementById('progressText');
+  if (progressText) {
+    progressText.textContent = total === 0 ? 'No tasks for today' : 
+                               completed === total ? 'All done! 🎉' : 
+                               `${total - completed} remaining`;
+  }
+  
+  // Render lists
+  renderTaskListToContainer('todayList', todayTasks.slice(0, 5));
+  renderTaskListToContainer('starredList', tasks.filter(t => t.starred && !t.done).slice(0, 5));
+}
+
+function renderTaskListToContainer(containerId, taskList) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  if (taskList.length === 0) {
+    container.innerHTML = `<div class="ios-empty" style="padding:40px;"><div class="ios-empty-sub">No tasks here</div></div>`;
+    return;
+  }
+  
+  container.innerHTML = taskList.map(t => `
+    <div class="ios-list-item" style="--priority-color:${priorityColor(t.priority)}">
+      <div class="item-check ${t.done ? 'checked' : ''}" onclick="event.stopPropagation(); toggleTask('${t.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <div class="item-content" onclick="toggleStar('${t.id}')">
+        <div class="item-title" style="${t.done ? 'text-decoration:line-through; opacity:0.6;' : ''}">${esc(t.text)}</div>
+        <div class="item-subtitle">${t.category || 'No category'} • ${t.priority} priority</div>
+      </div>
+      <span style="color:var(--ios-yellow); font-size:18px; opacity:${t.starred ? '1' : '0'};">★</span>
+    </div>
+  `).join('');
+}
+
+function renderTaskList(searchQuery = '') {
+  const container = document.getElementById('taskList');
+  if (!container) return;
+  
+  let filtered = tasks;
+  
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = tasks.filter(t => 
+      t.text.toLowerCase().includes(q) || 
+      (t.note && t.note.toLowerCase().includes(q)) ||
+      (t.category && t.category.toLowerCase().includes(q))
+    );
+  }
+  
+  // Sort: starred first, then by priority, then by date
+  const priorityOrder = { high: 0, medium: 1, low: 2 };
+  filtered.sort((a, b) => {
+    if (a.starred !== b.starred) return b.starred ? 1 : -1;
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
+    }
+    return b.created - a.created;
+  });
+  
+  document.getElementById('taskCountLabel').textContent = filtered.length + ' tasks';
+  
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="ios-empty">
+        <div class="ios-empty-icon">📋</div>
+        <div class="ios-empty-title">No tasks found</div>
+        <div class="ios-empty-sub">Try a different search or add a new task</div>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = filtered.map(t => `
+    <div class="task-card ${t.done ? 'done' : ''}" style="--priority-color:${priorityColor(t.priority)}">
+      <div class="task-card-inner">
+        <div class="item-check ${t.done ? 'checked' : ''}" onclick="toggleTask('${t.id}')" style="margin-right:4px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="task-body">
+          <div class="task-title">${esc(t.text)}</div>
+          <div class="task-meta">
+            <span class="task-tag tag-${t.priority}">${t.priority}</span>
+            ${t.category ? `<span class="task-tag" style="background:var(--ios-surface-elevated); color:var(--ios-text-secondary);">${t.category}</span>` : ''}
+            ${t.due ? `<span class="task-tag" style="background:var(--ios-surface-elevated); color:var(--ios-text-secondary);">${formatDate(t.due)}</span>` : ''}
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="action-btn star" onclick="toggleStar('${t.id}')">${t.starred ? '★' : '☆'}</button>
+          <button class="action-btn ai" onclick="aiExplainTask('${t.id}')" title="AI Help">✨</button>
+          <button class="action-btn" onclick="deleteTask('${t.id}')" style="color:var(--ios-red);">🗑</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function aiExplainTask(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  
+  showToast('✨ Analyzing task...');
+  
+  const prompt = `Provide brief advice on how to approach this task efficiently: "${task.text}"
+  
+Keep it under 3 sentences, actionable and encouraging.`;
+
+  const response = await callGeminiAPI(prompt);
+  if (response) {
+    showAIResponse('AI Advice', response, false);
+  }
+}
+
+function renderStats() {
+  const completed = tasks.filter(t => t.done).length;
+  const total = tasks.length;
+  const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+  
+  document.getElementById('statCompleted').textContent = completed;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statStreak').textContent = settings.streak || 0;
+  document.getElementById('statRate').textContent = rate + '%';
+}
+
+function updateBadge() {
+  const pending = tasks.filter(t => !t.done).length;
+  
+  const badge = document.getElementById('pendingBadge');
+  if (badge) {
+    badge.textContent = pending > 99 ? '99+' : pending;
+    badge.style.display = pending > 0 ? 'flex' : 'none';
+  }
+  
+  const sidebarBadge = document.getElementById('sidebarBadge');
+  if (sidebarBadge) {
+    sidebarBadge.textContent = pending > 99 ? '99+' : pending;
+    sidebarBadge.style.display = pending > 0 ? 'flex' : 'none';
+  }
+}
+
+// ════════════════════════════════════════════════════
+// UTILITIES
+// ════════════════════════════════════════════════════
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function esc(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+function priorityColor(p) {
+  return p === 'high' ? 'var(--ios-red)' : 
+         p === 'low' ? 'var(--ios-green)' : 
+         'var(--ios-orange)';
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const date = new Date(d + 'T00:00:00');
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  
+  if (d === todayStr()) return 'Today';
+  if (d === tomorrow.toISOString().slice(0, 10)) return 'Tomorrow';
+  
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function clearCompleted() {
+  const count = tasks.filter(t => t.done).length;
+  if (count === 0) {
+    showToast('No completed tasks');
+    return;
+  }
+  if (confirm(`Clear ${count} completed tasks?`)) {
+    tasks = tasks.filter(t => !t.done);
+    save();
+    renderAll();
+    showToast(`Cleared ${count} tasks`);
+  }
+}
+
+function exportTasks() {
+  const data = JSON.stringify({ tasks, exported: new Date().toISOString() }, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `taskflow-backup-${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Tasks exported');
+}
+
+// ════════════════════════════════════════════════════
+// START
+// ════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
